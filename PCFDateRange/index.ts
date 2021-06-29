@@ -1,7 +1,34 @@
 import {IInputs, IOutputs} from "./generated/ManifestTypes";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { PCFDateRangeControl, IPCFDateRangeControlProps } from "./DateControl";
+import { Moment }from 'moment';
+import moment = require("moment");
+import { Rectangle } from "@uifabric/utilities";
 
 export class PCFDateRange implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
+	private notifyOutputChanged: () => void;
+	private _container: HTMLDivElement;
+	private _props : IPCFDateRangeControlProps = {
+		selectedStartDate : undefined,
+		selectedEndDate: undefined,
+		textFieldValue: "",
+		showCalendar: false,
+		startDisplayName: "",
+		endDisplayName: "",
+		inputDateChanged: this.inputDateChanged.bind(this)
+	};
+
+	private inputDateChanged(dtStart: Moment 
+		| undefined, dtEndDate: Moment | undefined) {
+		if (this._props.selectedStartDate !== dtStart || 
+			this._props.selectedEndDate !== dtEndDate) {
+				this._props.selectedStartDate = moment(dtStart);
+				this._props.selectedEndDate = moment(dtEndDate);
+				this.notifyOutputChanged();
+		}
+	}
 	/**
 	 * Empty constructor.
 	 */
@@ -20,7 +47,22 @@ export class PCFDateRange implements ComponentFramework.StandardControl<IInputs,
 	 */
 	public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void, state: ComponentFramework.Dictionary, container:HTMLDivElement): void
 	{
+		debugger;
 		// Add control initialization code
+		this._container = container;
+		this.notifyOutputChanged = notifyOutputChanged;
+
+		if(context.parameters.startDate.raw)
+			this._props.selectedStartDate = moment(context.parameters.startDate.raw as Date);
+
+		if(context.parameters.endDate.raw)
+			this._props.selectedEndDate = moment(context.parameters.endDate.raw as Date);
+			
+			this._props.startDisplayName = (context.parameters.startDate.attributes as ComponentFramework.PropertyHelper.FieldPropertyMetadata.DateTimeMetadata).DisplayName;
+
+			this._props.endDisplayName = (context.parameters.endDate.attributes as ComponentFramework.PropertyHelper.FieldPropertyMetadata.DateTimeMetadata).DisplayName;
+
+		ReactDOM.render(React.createElement(PCFDateRangeControl, this._props),container);	
 	}
 
 
@@ -39,7 +81,10 @@ export class PCFDateRange implements ComponentFramework.StandardControl<IInputs,
 	 */
 	public getOutputs(): IOutputs
 	{
-		return {};
+		return {
+			startDate: (this._props.selectedStartDate as Moment).toDate(),
+			endDate : (this._props.selectedEndDate as Moment).toDate()
+		};
 	}
 
 	/**
@@ -49,5 +94,6 @@ export class PCFDateRange implements ComponentFramework.StandardControl<IInputs,
 	public destroy(): void
 	{
 		// Add code to cleanup control if necessary
+		ReactDOM.unmountComponentAtNode(this._container);
 	}
 }
