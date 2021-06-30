@@ -26,7 +26,6 @@ export class PCFDateRangeControl extends React.Component<IPCFDateRangeControlPro
     parseDtText(selectedStartDate: Moment | undefined, selectedEndDate: Moment | undefined, textFieldValue: string): string {
         return (textFieldValue == "" && selectedEndDate != undefined && selectedStartDate != undefined) ? this.parseDateTime(this.convertToDate(selectedStartDate)) + " - " + this.parseDateTime(this.convertToDate(selectedEndDate)) : textFieldValue;
     }
-    }
     private _calendarButtonElement!: HTMLElement;
 
     constructor(props:IPCFDateRangeControlProps) {
@@ -77,8 +76,8 @@ export class PCFDateRangeControl extends React.Component<IPCFDateRangeControlPro
 
     parseDateTime(dt: Date): string {
         
-        var month_index = dt.getMonth() + 1;
         var day = (dt.getDate());
+        var month_index = dt.getMonth() + 1;
         var year = dt.getFullYear();
         
         return day + "/" + month_index + "/" + year;
