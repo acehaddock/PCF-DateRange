@@ -81,7 +81,7 @@ export class PCFDateRangeControl extends React.Component<IPCFDateRangeControlPro
         var year = dt.getFullYear();
         
         return month_index + "/" + day "/" + year;
-      // return day + "/" + month_index + "/" + year;
+
       }
 
     public render() : JSX.Element {
