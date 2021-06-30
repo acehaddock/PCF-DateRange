@@ -24,7 +24,7 @@ export interface IPCFDateRangeControlProps {
 export class PCFDateRangeControl extends React.Component<IPCFDateRangeControlProps,IPCFDateRangeControlState>
 {
     parseDtText(selectedStartDate: Moment | undefined, selectedEndDate: Moment | undefined, textFieldValue: string): string {
-        return (textFieldValue == "" && selectedEndDate != undefined && selectedStartDate != undefined) ? this.parseDateTime(this.convertToDate(selectedStartDate)) + " - " + this.parseDateTime(this.convertToDate(selectedEndDate)) : textFieldValue;
+        return (textFieldValue == "" && selectedEndDate != undefined && selectedStartDate != undefined) ? this.parseDateTime(selectedStartDate) + " - " + this.parseDateTime(selectedEndDate) : textFieldValue;
     }
     private _calendarButtonElement!: HTMLElement;
 
